@@ -4,13 +4,14 @@ env:
   shell: bash
   git-credential-helper: yes
   secrets-manager:
-    OAUTH_TOKEN: " git_oauth_token:oauth_token"
+    OAUTH_TOKEN: "git_oauth_token:oauth_token"
 
 phases:
   install:
     commands:  # Install AWS cli, kubectl (needed for Helm) and Helm
       - nohup /usr/local/bin/dockerd --host=unix:///var/run/docker.sock --host=tcp://0.0.0.0:2375 --storage-driver=overlay&
       - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
+
   pre_build:
     commands:
       - AWS_ACCOUNT_ID=705303224111
