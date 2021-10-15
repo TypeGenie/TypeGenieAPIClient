@@ -1,0 +1,62 @@
+version: 0.2
+
+
+env:
+  shell: bash
+  git-credential-helper: yes
+  secrets-manager:
+    OAUTH_TOKEN: " git_oauth_token:oauth_token"
+
+
+phases:
+  install:
+    commands:  # Install AWS cli, kubectl (needed for Helm) and Helm
+      - nohup /usr/local/bin/dockerd --host=unix:///var/run/docker.sock --host=tcp://0.0.0.0:2375 --storage-driver=overlay&
+      - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
+  pre_build:
+    commands:
+      - AWS_ACCOUNT_ID=705303224111
+      - AWS_DEFAULT_REGION=eu-west-1
+      - IMAGE_REPO_NAME=typegenie/typegenie-api-client
+      - REPO_NAME=TypeGenieAPIClient
+      - REPO_URL = github.com/abhitopia/$REPO_NAME.git
+      - ENV=staging
+      - aws --version
+      - GITHUB_USER=renatomrochatg
+      - ECR_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $ECR_URI
+      - REPOSITORY_URI=$ECR_URI/$IMAGE_REPO_NAME
+      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - IMAGE_TAG=build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
+      - CURRENT_TG_CLI_VERSION=$(echo $(pip list | grep typegenie) | awk -F" " '{print $2}')
+  build:
+    commands:
+      - DATE=$(date '+%Y-%m-%d-%H-%M')
+      - echo Build started on `date`
+      - echo Building the Docker image...
+      - docker build -t version-bumper-$ENV:latest -f Production.Dockerfile .
+      - docker build -t tester-container:latest -f Tests.Dockerfile .
+      - echo Will start running tests...
+      - docker run tester-container:latest python tests.py
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - |
+        if [ "$CODEBUILD_BUILD_SUCCEEDING" == 1 ]; then
+          docker run -v $(pwd):/root/$REPO_NAME version-bumper-$ENV:latest git remote set-url origin https://$GITHUB_USER:$OAUTH_TOKEN@$REPO_URL
+          docker run -v $(pwd):/root/$REPO_NAME version-bumper-$ENV:latest bumpversion --current-version $CURRENT_TG_CLI_VERSION patch setup.py
+          docker run -v $(pwd):/root/$REPO_NAME version-bumper-$ENV:latest git add setup.py
+          docker run -v $(pwd):/root/$REPO_NAME version-bumper-$ENV:latest git commit -m "Codebuild bumpversion"
+          docker run -v $(pwd):/root/$REPO_NAME version-bumper-$ENV:latest git tag $ENV-$DATE-$IMAGE_TAG
+          docker run -v $(pwd):/root/$REPO_NAME version-bumper-$ENV:latest git push origin main  && git push --tags origin main
+
+          echo Version successfully bumped
+        else
+          echo Unit tests did not pass... will not bump version
+        fi
+
+#touch token.txt
+#          echo $OAUTH_TOKEN >> token.txt
+#          gh auth login --with-token < token.txt
+#          gh release create $UPDATED_VERSION --title "CICD test release $UPDATED_VERSION" --notes "Release automatically created through cicd pipeline"
