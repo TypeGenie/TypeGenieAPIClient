@@ -10,6 +10,7 @@ env:
   git-credential-helper: yes
 
 
+
 phases:
   install:
     commands:  # Install AWS cli, kubectl (needed for Helm) and Helm
@@ -34,6 +35,7 @@ phases:
       - DATE=$(date '+%Y-%m-%d-%H-%M')
       - echo Build started on `date`
       - echo Building the Docker image...
+
       - docker build -t version-bumper-$ENV:latest -f Production.Dockerfile .
       - docker build -t tester-container:latest -f Tests.Dockerfile .
       - echo Will start running tests...
@@ -60,7 +62,3 @@ phases:
           echo Unit tests did not pass... will not bump version
         fi
 
-#touch token.txt
-#          echo $OAUTH_TOKEN >> token.txt
-#          gh auth login --with-token < token.txt
-#          gh release create $UPDATED_VERSION --title "CICD test release $UPDATED_VERSION" --notes "Release automatically created through cicd pipeline"

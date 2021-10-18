@@ -1,4 +1,5 @@
 import time
+
 from typing import List, Optional
 from random import randint, choice
 
@@ -12,14 +13,15 @@ try:
     from prompt_toolkit.completion import Completer, Completion
     from prompt_toolkit.document import Document
     from prompt_toolkit.application.current import get_app
+
     from prompt_toolkit.auto_suggest import Suggestion
     from prompt_toolkit.key_binding import KeyBindings
 except ImportError as e:
     raise Exception('Extra dependencies are required to use CLI tool. Use `pip install typegenie[with-cli]`').with_traceback(e.__traceback__)
 
 colorama.init()
-bindings = KeyBindings()
 
+bindings = KeyBindings()
 
 def color(text, fore=F.RESET, back=B.RESET, reset=True):
     if reset:
@@ -122,12 +124,14 @@ class TypeGenieCompleter(Completer):
 
 
 class AutoComplete:
+
     def __init__(self, user, dialogue_dataset, interactive=True, unprompted=False, multiline=False, no_context=False):
         self.user = user
         self.context = []
         self.dialogue_dataset = dialogue_dataset
         self.unprompted = unprompted
         self.multiline = multiline
+
         self.no_context = no_context
         self.interactive = interactive
         self.session = PromptSession(complete_in_thread=True,
