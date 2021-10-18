@@ -3,11 +3,11 @@ version: 0.2
 
 env:
   shell: bash
-  git-credential-helper: yes
   secrets-manager:
     TWINE_USERNAME: "PyPi/testAccount:username"
     TWINE_PASSWORD: "PyPi/testAccount:password"
-    OAUTH_TOKEN: "typegenie-developer-oauth-token"
+    OAUTH_TOKEN: "typegenie-developer-oauth-token:oauth_token"
+  git-credential-helper: yes
 
 
 phases:
