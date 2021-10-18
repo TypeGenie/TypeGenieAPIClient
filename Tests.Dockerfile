@@ -1,4 +1,4 @@
-FROM python:3.7.3
+FROM 705303224111.dkr.ecr.eu-west-1.amazonaws.com/typegenie/python:3.7.3
 WORKDIR /root/TypeGenieAPIClient
 COPY ./README.md ./README.md
 COPY ./src ./src
