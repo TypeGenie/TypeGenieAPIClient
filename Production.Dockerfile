@@ -1,9 +1,12 @@
-FROM python:3.7.3
+FROM 705303224111.dkr.ecr.eu-west-1.amazonaws.com/typegenie/python:3.7.3
 WORKDIR /root/TypeGenieAPIClient
 COPY ./README.md ./README.md
 COPY ./src ./src
 COPY ./setup.py ./setup.py
 COPY ./tests.py ./tests.py
+RUN apt install -y git
+RUN git config --global user.email "codebuild@aws.com"
+RUN git config --global user.name "typegeniedeveloper"
 RUN python setup.py install
 RUN pip install wheel
 RUN pip install twine

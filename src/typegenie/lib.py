@@ -288,12 +288,12 @@ class Dataset:
         deployment_api = authenticator.get_deployment_api(deployment_id=self._deployment_id)
         return deployment_api.download_dataset(dataset_id=self._id)
 
-    def __del__(self):
-        # Only delete from database when user explicitly deleted the instance
-        trace = traceback.format_stack()
-        user_called = True if len(trace) >= 2 and ' del ' in trace[-2] else False
-        if user_called and self._id is not None:
-            self.delete()
+    # def __del__(self):
+    #     # Only delete from database when user explicitly deleted the instance
+    #     trace = traceback.format_stack()
+    #     user_called = True if len(trace) >= 2 and ' del ' in trace[-2] else False
+    #     if user_called and self._id is not None:
+    #         self.delete()
 
     def __repr__(self):
         return repr(self.to_dict())
@@ -370,12 +370,12 @@ class Deployment:
         account_api.delete_deployment(deployment_id=self._id)
         self._id = None
 
-    def __del__(self):
-        # Only delete from database when user explicitly deleted the instance
-        trace = traceback.format_stack()
-        user_called = True if len(trace) >= 2 and ' del ' in trace[-2] else False
-        if user_called and self._id is not None:
-            self.delete()
+    # def __del__(self):
+    #     # Only delete from database when user explicitly deleted the instance
+    #     trace = traceback.format_stack()
+    #     user_called = True if len(trace) >= 2 and ' del ' in trace[-2] else False
+    #     if user_called and self._id is not None:
+    #         self.delete()
 
     def datasets(self, dataset_id=None, create=False, metadata={}):
         deployment_api = authenticator.get_deployment_api(deployment_id=self._id)
@@ -498,12 +498,12 @@ class User:
         deployment_api.delete_user(user_id=self._id)
         self._id = None
 
-    def __del__(self):
-        # Only delete from database when user explicitly deleted the instance
-        trace = traceback.format_stack()
-        user_called = True if len(trace) >= 2 and ' del ' in trace[-2] else False
-        if user_called and self._id is not None:
-            self.delete()
+    # def __del__(self):
+    #     # Only delete from database when user explicitly deleted the instance
+    #     trace = traceback.format_stack()
+    #     user_called = True if len(trace) >= 2 and ' del ' in trace[-2] else False
+    #     if user_called and self._id is not None:
+    #         self.delete()
 
     @staticmethod
     def get(user_id, deployment_id):
