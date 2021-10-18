@@ -41,7 +41,7 @@ for idx in range(len(users)):
     if user.id == user_id:
         # (Unsafe) Deletion method 2
         user = users.pop(idx)
-        del user
+        user.delete()
         break
 
 
@@ -52,7 +52,7 @@ print('Created User:', user)
 # Delete a user
 to_delete_user = deployment.users(user_id='to-be-user', metadata={}, create=True)
 print('List Users (Before Deletion):', deployment.users())
-del to_delete_user
+to_delete_user.delete()
 print('List Users (After Deletion):', deployment.users())
 
 # Get existing user
