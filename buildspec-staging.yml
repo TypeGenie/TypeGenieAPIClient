@@ -5,6 +5,8 @@ env:
   shell: bash
   git-credential-helper: yes
   secrets-manager:
+    TWINE_USERNAME: "PyPi/testAccount:username"
+    TWINE_PASSWORD: "PyPi/testAccount:password"
     OAUTH_TOKEN: " git_oauth_token:oauth_token"
 
 
@@ -19,7 +21,7 @@ phases:
       - AWS_DEFAULT_REGION=eu-west-1
       - IMAGE_REPO_NAME=typegenie/typegenie-api-client
       - REPO_NAME=TypeGenieAPIClient
-      - REPO_URL=github.com/abhitopia/$REPO_NAME.git
+      - REPO_URL=github.com/TypeGenie/$REPO_NAME.git
       - ENV=staging
       - aws --version
       - GITHUB_USER=renatomrochatg
@@ -50,6 +52,9 @@ phases:
           docker run -v $(pwd):/root/$REPO_NAME version-bumper-$ENV:latest git commit -m "Codebuild bumpversion"
           docker run -v $(pwd):/root/$REPO_NAME version-bumper-$ENV:latest git tag $ENV-$DATE-$IMAGE_TAG
           docker run -v $(pwd):/root/$REPO_NAME version-bumper-$ENV:latest git push origin main  && git push --tags origin main
+          rm -rf dist && mkdir -p dist
+          docker run -v dist:/root/TypeGenieAPIClient/dist version-bumper-$ENV:latest python setup.py sdist bdist_wheel
+          docker run -v dist:/root/TypeGenieAPIClient/dist version-bumper-$ENV:latest twine upload --repository testpypi dist/* --username $TWINE_USERNAME --password $TWINE_PASSWORD
 
           echo Version successfully bumped
         else
