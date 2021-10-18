@@ -44,6 +44,7 @@ phases:
         if [ "$CODEBUILD_BUILD_SUCCEEDING" == 1 ]; then
           echo Tests successfully passed, will bump version and deploy to pip
           docker run -v $(pwd):/root/$REPO_NAME version-bumper-$ENV:latest git remote set-url origin https://$GITHUB_USER:$OAUTH_TOKEN@$REPO_URL
+          docker run -v $(pwd):/root/$REPO_NAME version-bumper-$ENV:latest git checkout production
           docker run -v $(pwd):/root/$REPO_NAME version-bumper-$ENV:latest bumpversion --current-version $CURRENT_TG_CLI_VERSION minor setup.py
           docker run -v $(pwd):/root/$REPO_NAME version-bumper-$ENV:latest git add setup.py
           docker run -v $(pwd):/root/$REPO_NAME version-bumper-$ENV:latest git commit -m "Codebuild bumpversion"
