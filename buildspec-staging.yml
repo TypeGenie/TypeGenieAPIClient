@@ -7,7 +7,7 @@ env:
   secrets-manager:
     TWINE_USERNAME: "PyPi/testAccount:username"
     TWINE_PASSWORD: "PyPi/testAccount:password"
-    OAUTH_TOKEN: " git_oauth_token:oauth_token"
+    OAUTH_TOKEN: "typegenie-developer-oauth-token"
 
 
 phases:

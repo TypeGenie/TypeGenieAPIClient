@@ -5,7 +5,7 @@ env:
   secrets-manager:
     TWINE_USERNAME: "PyPi/mainAccount:username"
     TWINE_PASSWORD: "PyPi/mainAccount:password"
-    OAUTH_TOKEN: " git_oauth_token:oauth_token"
+    OAUTH_TOKEN: "typegenie-developer-oauth-token"
   git-credential-helper: yes
 
 phases:
