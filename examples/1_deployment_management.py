@@ -22,16 +22,8 @@ for idx in range(len(deployments)):
     if deployment.id == deployment_id:
         # Delete existing client from the account. Note: Deletes it on the backend also.
 
-        # (Safe) Deletion method 1
         deployment.delete()
         del deployment
-
-        # (Unsafe) Deletion method 2
-        deployment = deployments.pop(idx)
-        del deployment
-        # Notice that for `del deployment` to work (without needing `deployment.delete()`, all reference of
-        # `deployment` must be removed. That is why we do `deployment.pop(idx)` to remove it's reference from the
-        # list `deployments`. When in doubt, use `deployment.delete()` before calling `del deployment`
         break
 
 # Create a new deployment
@@ -41,7 +33,7 @@ print('New Deployment:', new_deployment)
 # Delete a deployment
 to_delete_deployment = Deployment.create(deployment_id='to-be-deleted', metadata={})
 print('List Deployments (Before Deletion):', Deployment.list())
-del to_delete_deployment
+to_delete_deployment.delete()
 print('List Deployments (After Deletion):', Deployment.list())
 
 # Get existing deployment

@@ -41,18 +41,10 @@ dataset_id = 'my-new-dataset'
 for idx in range(len(datasets)):
     dataset = datasets[idx]
     if dataset.id == dataset_id:
-        # Delete existing dataset from the deployment. Note: Deletes it on the backend also.
 
         # (Safe) Deletion method 1
         dataset.delete()
         del dataset
-
-        # (Unsafe) Deletion method 2
-        dataset = datasets.pop(idx)
-        del dataset
-        # Notice that for `del dataset` to work (without needing `dataset.delete()`, all reference of
-        # `dataset` must be removed. That is why we do `datasets.pop(idx)` to remove it's reference from the
-        # list `deployments`. When in doubt, use `dataset.delete()` before calling `del dataset`
         break
 
 
@@ -63,7 +55,7 @@ print('Created Dataset:', dataset)
 # Delete a dataset
 to_delete_dataset = deployment.datasets(dataset_id='to-be-deleted', metadata={}, create=True)
 print('List Datasets (Before Deletion):', deployment.datasets())
-del to_delete_dataset
+to_delete_dataset.delete()
 print('List Datasets (After Deletion):', deployment.datasets())
 
 # Get existing dataset
