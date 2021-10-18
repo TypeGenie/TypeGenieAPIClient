@@ -48,7 +48,7 @@ phases:
           docker run -v $(pwd):/root/$REPO_NAME version-bumper-$ENV:latest git add setup.py
           docker run -v $(pwd):/root/$REPO_NAME version-bumper-$ENV:latest git commit -m "Codebuild bumpversion"
           docker run -v $(pwd):/root/$REPO_NAME version-bumper-$ENV:latest git tag $ENV-$DATE-$IMAGE_TAG
-          docker run -v $(pwd):/root/$REPO_NAME version-bumper-$ENV:latest git push origin $ENV && git push --tags origin $ENV
+          docker run -v $(pwd):/root/$REPO_NAME version-bumper-$ENV:latest git push origin $ENV && git push --tags origin
           rm -rf dist && mkdir -p dist
           docker run -v dist:/root/TypeGenieAPIClient/dist version-bumper-$ENV:latest python setup.py sdist bdist_wheel
           docker run -v dist:/root/TypeGenieAPIClient/dist version-bumper-$ENV:latest twine upload dist/* --username $TWINE_USERNAME --password $TWINE_PASSWORD

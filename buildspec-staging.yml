@@ -15,6 +15,7 @@ phases:
     commands:  # Install AWS cli, kubectl (needed for Helm) and Helm
       - nohup /usr/local/bin/dockerd --host=unix:///var/run/docker.sock --host=tcp://0.0.0.0:2375 --storage-driver=overlay&
       - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
+      - pip install bumpversion
   pre_build:
     commands:
       - IMAGE_REPO_NAME=typegenie/typegenie-api-client
@@ -43,12 +44,12 @@ phases:
       - echo Build completed on `date`
       - |
         if [ "$CODEBUILD_BUILD_SUCCEEDING" == 1 ]; then
-          docker run -v $(pwd):/root/$REPO_NAME version-bumper-$ENV:latest git remote set-url origin https://$GITHUB_USER:$OAUTH_TOKEN@$REPO_URL
-          docker run -v $(pwd):/root/$REPO_NAME version-bumper-$ENV:latest bumpversion --current-version $CURRENT_TG_CLI_VERSION patch setup.py
-          docker run -v $(pwd):/root/$REPO_NAME version-bumper-$ENV:latest git add setup.py
-          docker run -v $(pwd):/root/$REPO_NAME version-bumper-$ENV:latest git commit -m "Codebuild bumpversion"
-          docker run -v $(pwd):/root/$REPO_NAME version-bumper-$ENV:latest git tag $ENV-$DATE-$IMAGE_TAG
-          docker run -v $(pwd):/root/$REPO_NAME version-bumper-$ENV:latest git push origin main  && git push --tags origin main
+          git remote set-url origin https://$GITHUB_USER:$OAUTH_TOKEN@$REPO_URL
+          bumpversion --current-version $CURRENT_TG_CLI_VERSION patch setup.py
+          git add setup.py
+          git commit -m "Codebuild bumpversion"
+          git tag $ENV-$DATE-$IMAGE_TAG
+          git push origin main  && git push --tags origin
           rm -rf dist && mkdir -p dist
           docker run -v dist:/root/TypeGenieAPIClient/dist version-bumper-$ENV:latest python setup.py sdist bdist_wheel
           docker run -v dist:/root/TypeGenieAPIClient/dist version-bumper-$ENV:latest twine upload --repository testpypi dist/* --username $TWINE_USERNAME --password $TWINE_PASSWORD
