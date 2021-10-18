@@ -5,8 +5,8 @@ COPY ./src ./src
 COPY ./setup.py ./setup.py
 COPY ./tests.py ./tests.py
 RUN apt install -y git
-RUN git config --global user.email "renato@typegenie.net"
-RUN git config --global user.name "renatomrochatg"
+RUN git config --global user.email "codebuild@aws.com"
+RUN git config --global user.name "typegeniedeveloper"
 RUN python setup.py install
 RUN pip install wheel
 RUN pip install twine

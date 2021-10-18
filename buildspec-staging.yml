@@ -31,7 +31,7 @@ phases:
       - REPOSITORY_URI=$ECR_URI/$IMAGE_REPO_NAME
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - IMAGE_TAG=build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
-      - CURRENT_TG_CLI_VERSION=$(echo $(pip list | grep typegenie) | awk -F" " '{print $2}')
+      - CURRENT_TG_CLI_VERSION=$(python setup.py --version)
   build:
     commands:
       - DATE=$(date '+%Y-%m-%d-%H-%M')
