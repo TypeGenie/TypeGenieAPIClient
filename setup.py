@@ -8,7 +8,7 @@ src_dir = str(Path(__file__).parent)
 
 setup(
     name='typegenie',
-    version='0.2.5',
+    version='0.3.0',
     url="https://github.com/TypeGenie/TypeGenieApiClient",
     author="abhitopia",
     author_email="hi@typegenie.net",
