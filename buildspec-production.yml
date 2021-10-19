@@ -48,7 +48,7 @@ phases:
           docker run -v $(pwd):/root/$REPO_NAME version-bumper-$ENV:latest bumpversion --current-version $CURRENT_TG_CLI_VERSION minor setup.py
           docker run -v $(pwd):/root/$REPO_NAME version-bumper-$ENV:latest git add setup.py
           docker run -v $(pwd):/root/$REPO_NAME version-bumper-$ENV:latest git commit -m "Codebuild bumpversion"
-          docker run -v $(pwd):/root/$REPO_NAME version-bumper-$ENV:latest git tag $ENV-$DATE-$IMAGE_TAG
+          docker run -v $(pwd):/root/$REPO_NAME version-bumper-$ENV:latest git tag $ENV-$DATE-$IMAGE_TAG-$(python setup.py --version)
           docker run -v $(pwd):/root/$REPO_NAME version-bumper-$ENV:latest git push origin $ENV && git push --tags origin
           rm -rf dist && mkdir -p dist
           docker run -v $(pwd):/root/$REPO_NAME version-bumper-$ENV:latest python setup.py sdist bdist_wheel
